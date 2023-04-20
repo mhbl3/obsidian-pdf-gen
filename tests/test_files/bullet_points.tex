@@ -1,0 +1,135 @@
+\documentclass[10pt]{report}
+\usepackage{minted}
+\usepackage{enumitem}
+\setlistdepth{9}
+
+\setlist[itemize,1]{label=\textbullet}
+\setlist[itemize,2]{label=\textbullet}
+\setlist[itemize,3]{label=\textbullet}
+\setlist[itemize,4]{label=\textbullet}
+\setlist[itemize,5]{label=\textbullet}
+\setlist[itemize,6]{label=\textbullet}
+\setlist[itemize,7]{label=\textbullet}
+\setlist[itemize,8]{label=\textbullet}
+\setlist[itemize,9]{label=\textbullet}
+
+\renewlist{itemize}{itemize}{9}
+
+\usepackage{graphicx}
+
+\usepackage{csquotes}
+
+\usepackage{hyperref}
+
+\usepackage[T1]{fontenc}
+
+\usepackage[most]{tcolorbox}
+\definecolor{block-gray}{gray}{0.95}
+\newtcolorbox{advtcolorbox}{
+    %colback=block-gray,
+    boxrule=0pt,
+    boxsep=0pt,
+    breakable,
+    enhanced jigsaw,
+    borderline west={4pt}{0pt}{gray},
+}
+
+\usepackage{amsmath}
+\usepackage[dvipsnames]{xcolor} % to access the named colour LightGray
+\usepackage{soul}
+\usepackage{sectsty}
+\definecolor{LightGray}{rgb}{0.9, 0.9, 0.9}
+\definecolor{inlinecodecolor}{rgb}{0, 0.3, 0.6}
+\usepackage{lmodern}
+\makeatletter
+\renewcommand\subparagraph{%
+\@startsection{subparagraph}{5}{0pt}%
+{3.25ex \@plus 1ex \@minus .2ex}{-1em}%
+{\normalfont\normalsize\bfseries}}
+\makeatother
+\sethlcolor{yellow}
+\newrobustcmd*\inlinecode[2][]{\textcolor{inlinecodecolor}{\mintinline[#1]{python}{#2}}}
+\begin{document}
+
+
+\chapter{Bullet Points}
+
+\section{Bullet Point Example}
+
+
+In my shopping list, I have:
+
+\begin{itemize}
+\item Bread
+\item Eggd
+
+\item Milk
+
+\end{itemize}
+
+
+Visited continent/countries/cities:
+
+\begin{itemize}
+\item Africa
+\begin{itemize}
+\item Cote d'Ivoire
+
+\begin{itemize}
+\item Abidjan
+
+\item Man
+
+\end{itemize}
+\end{itemize}
+\item Europe
+
+\begin{itemize}
+\item France
+
+\begin{itemize}
+\item Paris
+
+\end{itemize}
+\item Germany
+
+\begin{itemize}
+\item Berlin
+
+\end{itemize}
+\end{itemize}
+\item Asia
+
+\begin{itemize}
+\item India
+
+\begin{itemize}
+\item New Delhi
+
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+
+\section{Bullet points with code}
+
+\begin{itemize}
+\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{USA}
+\begin{itemize}
+\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{New York}
+
+\begin{itemize}
+\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{New York City}
+
+\end{itemize}
+\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{California}
+
+\begin{itemize}
+\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{Los Angeles}
+
+\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{San Francisco}
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\end{document}

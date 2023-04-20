@@ -1,0 +1,46 @@
+Obsidian Vault: ""
+
+# Latex document class
+document class:
+  name: report
+  # This forces the doc class specified in name. This is because for smaller fonts specific document class like `extarticle`
+  force document class: True
+
+# Number of spaces for indents (Default is 4)
+indent: 4
+
+# Font style
+font:
+  # style: mathptmx # Time
+  # style: None # Computer Modern Roman (Latex default)
+  # style: palatino # Palatino
+  # style: bookman # Bookman
+  # More fonts available: https://www.scijournal.org/articles/latex-font
+
+  # Possible sizes: 8pt, 9pt, 10pt (default), 11pt, 12pt, 14pt, 17pt, 20pt.
+  # As explained https://texblog.org/2012/08/29/changing-the-font-size-in-latex/
+  # NOTE: Only font sizes of 10pt, 11pt, and 12 pt are compatible with colored headers.
+  size: 10 # intgeter, no need to add "pt"
+
+# Available latex colors: https://www.overleaf.com/learn/latex/Using_colours_in_LaTeX
+Header Colors:
+  \#: red
+  \##: orange
+  \###: yellow
+  \####: Green
+  \#####: blue
+  \######: purple
+
+inline code:
+  default language: python
+
+# Default highlight color
+highlight color: yellow
+
+# Supported media:
+supported media:
+  - .png
+  - .jpg
+  - .jepg
+  - .md
+  - .csv
