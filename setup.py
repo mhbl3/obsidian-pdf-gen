@@ -3,8 +3,10 @@ from setuptools import setup
 
 setup(
     name="obsidian_pdf_gen",
-    version="1.6.1",
+    version="1.6.2",
     author="Marc-Henri Bleu-Laine",
+    url="https://github.com/mhbl3/obsidian-pdf-gen",
+    description="A python package to convert Obsidian Markdown files into stylish PDFs",
     packages=[
         "obsidian_pdf_gen",
         "obsidian_pdf_gen.generate_pdf",
@@ -18,6 +20,5 @@ setup(
     },
     zip_safe=True,
     include_package_data=True,
-    # package_dir={"": "obsidian_pdf_gen"},
     install_requires=["pytest", "pyyaml"],
 )
