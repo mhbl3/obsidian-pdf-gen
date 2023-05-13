@@ -1120,7 +1120,7 @@ def main():
     # Get the default image width
     parser.add_argument(
         "--img-width",
-        default=1.2,
+        default=1,
         type=float,
         help="Default width for images embedded in the pdf (in inches)",
     )
