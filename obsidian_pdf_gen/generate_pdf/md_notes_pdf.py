@@ -1145,6 +1145,8 @@ def main():
         else _return_bool_value(args.iln)
     )
     img_width = args.img_width
+    if isinstance(img_width, str):
+        img_width = float(img_width)
 
     if args.version:
         print(
