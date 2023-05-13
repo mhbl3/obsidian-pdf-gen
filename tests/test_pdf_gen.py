@@ -10,7 +10,7 @@ logger.setLevel(logging.DEBUG)
 
 class TestPdfGen:
     @pytest.mark.parametrize(
-        "note,note_paths,path,colorfull_headers,toc",
+        "note,note_paths,path,colorfull_headers,toc,img_width",
         [
             (
                 None,
@@ -19,6 +19,7 @@ class TestPdfGen:
                 "./test_files/simple_md_codeblock.tex",
                 False,
                 False,
+                1,
             ),
             (
                 None,
@@ -26,6 +27,7 @@ class TestPdfGen:
                 "./test_files/multiple_codeblocks.tex",
                 False,
                 False,
+                1,
             ),
             (
                 None,
@@ -33,6 +35,7 @@ class TestPdfGen:
                 "./test_files/colorful_headers.tex",
                 True,
                 False,
+                1,
             ),
             (
                 None,
@@ -40,6 +43,7 @@ class TestPdfGen:
                 "./test_files/latex_equation.tex",
                 False,
                 False,
+                1,
             ),
             (
                 None,
@@ -47,6 +51,7 @@ class TestPdfGen:
                 "./test_files/bullet_points.tex",
                 False,
                 False,
+                1,
             ),
             (
                 None,
@@ -54,6 +59,7 @@ class TestPdfGen:
                 "./test_files/linked_notes_1.tex",
                 False,
                 True,
+                1,
             ),
             (
                 None,
@@ -61,6 +67,7 @@ class TestPdfGen:
                 "./test_files/table.tex",
                 False,
                 False,
+                1,
             ),
             (
                 None,
@@ -68,6 +75,7 @@ class TestPdfGen:
                 "./test_files/block_quote.tex",
                 False,
                 False,
+                1,
             ),
             (
                 None,
@@ -75,6 +83,7 @@ class TestPdfGen:
                 "./test_files/front_matter.tex",
                 False,
                 False,
+                1,
             ),
             (
                 None,
@@ -82,6 +91,23 @@ class TestPdfGen:
                 "./test_files/hyperlinks.tex",
                 False,
                 False,
+                1,
+            ),
+            (
+                None,
+                "./test_files/Damping Ratio.md",
+                "./test_files/Damping Ratio.tex",
+                False,
+                False,
+                1,
+            ),
+            (
+                None,
+                "./test_files/note_with_image.md",
+                "./test_files/note_with_image.tex",
+                False,
+                False,
+                1.2,
             ),
         ],
         ids=[
@@ -95,9 +121,13 @@ class TestPdfGen:
             "quote_block",
             "front_matter",
             "hyperlinks",
+            "complexed_note",
+            "note_with_image",
         ],
     )
-    def test_ObsiPdfGenerator(self, note, note_paths, path, colorfull_headers, toc):
+    def test_ObsiPdfGenerator(
+        self, note, note_paths, path, colorfull_headers, toc, img_width
+    ):
         # Remove tex file and pdf file if they exist before generating new ones
         if os.path.exists(path):
             os.remove(path)
@@ -105,7 +135,7 @@ class TestPdfGen:
             os.remove(path.replace(".tex", ".pdf"))
 
         # Create the .tex file
-        obsi = ObsiPdfGenerator(colorfull_headers, toc)
+        obsi = ObsiPdfGenerator(colorfull_headers, toc, img_width)
         obsi.add_note(note=note, note_paths=note_paths)
         logger.debug(obsi.document)
         obsi.save(path)
