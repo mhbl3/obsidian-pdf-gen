@@ -27,18 +27,25 @@ with path_to_config.open("r") as f:
 class ObsiPdfGenerator:
     """Generator of pdfs from Obsidian notes."""
 
-    def __init__(self, colorfull_headers: bool = False, include_toc: bool = False):
+    def __init__(
+        self,
+        colorfull_headers: bool = False,
+        include_toc: bool = False,
+        img_width: float = 1.5,
+    ):
         """Initialization of the class responsible for creating the latex doc that will be used to create the pdf.
 
         Args:
             colorfull_headers (bool, optional): Whether or not to have colorful headers in the pdf. Defaults to False.
             include_toc (bool, optional): If `True` the Table of Content will be included in the pdf. Defaults to False.
+            img_width (float, optional): Image width in inches. Defaults to 1.5.
         """
         font_style = CONFIG["font"].get("style", None)
         font_size = CONFIG["font"]["size"]
         inline_code_lang = CONFIG["inline code"]["default language"]
         hl_color = CONFIG.get("highlight color", "yellow")
         document_class = CONFIG["document class"].get("name")
+        self.img_width = img_width
         force_document_class = CONFIG["document class"].get("force document class")
         toc_latex = "\\tableofcontents\n" if include_toc else ""
 
@@ -92,6 +99,11 @@ class ObsiPdfGenerator:
     enhanced jigsaw,
     borderline west={{4pt}}{{0pt}}{{gray}},
 }}
+
+\\newtcbox{{\pill}}[1][blue]{{on line,
+arc=7pt,colback=#1!10!white,colframe=#1!50!black,
+before upper={{\\rule[-3pt]{{0pt}}{{10pt}}}},boxrule=1pt,
+boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
 
 \\usepackage{{amsmath}}
 \\usepackage[dvipsnames]{{xcolor}} % to access the named colour LightGray
@@ -230,7 +242,9 @@ class ObsiPdfGenerator:
                         if len(additional_notes) > 0:
                             for graphic in additional_notes:
                                 if ".png" in graphic:
-                                    line = self._include_graphic(graphic)
+                                    line = self._include_graphic(
+                                        graphic, self.img_width
+                                    )
                                     # pop the last line to remve "[[my image.png]]" being present in doc
                                     tex.pop(-1)
                                     tex.append(line)
@@ -309,6 +323,11 @@ class ObsiPdfGenerator:
                     + word
                     + "}",
                 )
+
+        # Find and replace tags
+        for word in line.split():
+            if word.startswith("#") and len(word) > 1 and word.count("#") == 1:
+                line = line.replace(word, f"\\pill{{{word}}}")
 
         # Reverse these fixes if they are in a math block
         if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
@@ -406,6 +425,18 @@ class ObsiPdfGenerator:
             line = ""
             return line, lines_to_skip, []
         additional_notes = self.check_for_linked_notes(line)
+        if len(additional_notes) > 0:
+            links = re.findall(r"\[\[(.*?)\]\]", line)
+            for link in links:
+                logger.debug(f"link: {link}")
+                # In case there are multiple separators, but this does happen really when linking notes.
+                # It does happen for pictures, to the best of my knownledge.
+                if link.count("|") <= 1:
+                    line = line.replace(f"[[{link}]]", link.split("|")[-1])
+                else:
+                    line = line.replace(f"[[{link}]]", link.split("|")[1])
+                note_content[current_line_idx] = line
+
         logger.debug(f"is_table: {is_table}")
         if is_table:
             return line, lines_to_skip, additional_notes
@@ -988,11 +1019,12 @@ linenos
         return saved_paths
 
     @staticmethod
-    def _include_graphic(file_path: str) -> str:
+    def _include_graphic(file_path: str, img_width: float) -> str:
         """Includes a graphic into latex document.
 
         Args:
             file_path (str): String corresponding to the path of the file.
+            img_width (float, optional): Image width in inches.
 
         Returns:
             str: Returned string with latex code.
@@ -1001,7 +1033,9 @@ linenos
         file_path = str(pathlib.Path(file_path).as_posix())
         file_path = f'"{file_path}"'
         line = (
-            "\\begin{figure}[H]\\centering\n\t\\includegraphics[width=1\\linewidth]{"
+            "\\begin{figure}[H]\\centering\n\t\\includegraphics"
+            + f"[width={img_width}"
+            + "\\linewidth]{"
             + file_path
             + "}\n"
         )
@@ -1083,6 +1117,13 @@ def main():
         action="store_true",
         help="Reset the default vault of the config file",
     )
+    # Get the default image width
+    parser.add_argument(
+        "--img-width",
+        default=1.2,
+        type=float,
+        help="Default width for images embedded in the pdf (in inches)",
+    )
     # For version of package
     parser.add_argument(
         "--version",
@@ -1103,6 +1144,7 @@ def main():
         if args.include_linked_notes
         else _return_bool_value(args.iln)
     )
+    img_width = args.img_width
 
     if args.version:
         print(
@@ -1114,7 +1156,7 @@ def main():
 
     # If there is a note path, then we are using the command line to generate a pdf
     if note_path:
-        tex = ObsiPdfGenerator(ch, toc)
+        tex = ObsiPdfGenerator(ch, toc, img_width)
         # If specified, change to vault directory
         change_to_vault_directory()
         tex.add_note(args.note, note_path, use_chapters, include_linked_notes)
