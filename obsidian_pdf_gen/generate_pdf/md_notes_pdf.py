@@ -435,7 +435,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
                 # It does happen for pictures, to the best of my knownledge.
                 alias_idx = -1 if link.count("|") <= 1 else 1
                 split_link_file = self.extract_note_title(link.split("|")[0])
-                split_link_alias = link.split("|")[alias_idx]
+                split_link_alias = link.split("|")[alias_idx].lstrip()
                 split_link = f"\\hyperref[ch:{split_link_file}]{{{split_link_alias}}}"
                 line = line.replace(f"[[{link}]]", split_link)
                 logger.info(f"line: {line}")
