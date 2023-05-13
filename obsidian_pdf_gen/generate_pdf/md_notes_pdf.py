@@ -220,7 +220,9 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
 
                 if use_chapters:
                     # Add the note file name as the chapter name
-                    latex_chapter = "\\chapter{" + note_title + "}\n"
+                    latex_chapter = (
+                        "\\chapter{" + note_title + "}\\label{ch:" + note_title + "}\n"
+                    )
                     tex.append(latex_chapter)
                 # Loop through every line
                 lines_to_skip = []
@@ -428,13 +430,15 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
         if len(additional_notes) > 0:
             links = re.findall(r"\[\[(.*?)\]\]", line)
             for link in links:
-                logger.debug(f"link: {link}")
+                logger.info(f"link: {link}")
                 # In case there are multiple separators, but this does happen really when linking notes.
                 # It does happen for pictures, to the best of my knownledge.
-                if link.count("|") <= 1:
-                    line = line.replace(f"[[{link}]]", link.split("|")[-1])
-                else:
-                    line = line.replace(f"[[{link}]]", link.split("|")[1])
+                alias_idx = -1 if link.count("|") <= 1 else 1
+                split_link_file = self.extract_note_title(link.split("|")[0])
+                split_link_alias = link.split("|")[alias_idx]
+                split_link = f"\\hyperref[ch:{split_link_file}]{{{split_link_alias}}}"
+                line = line.replace(f"[[{link}]]", split_link)
+                logger.info(f"line: {line}")
                 note_content[current_line_idx] = line
 
         logger.debug(f"is_table: {is_table}")
