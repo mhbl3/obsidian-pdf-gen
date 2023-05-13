@@ -1,5 +1,5 @@
 action: GLOB, msg: packaging
-cwd: C:\Users\bleul\OneDrive\Documents\GitHub\obsidian_pdf_gen
+cwd: C:\Users\bleul\OneDrive\Documents\GitHub\obsidian-pdf-gen-public
 cmd: 'c:\users\bleul\miniconda3\python.exe' setup.py sdist --formats=zip --dist-dir '.tox\dist'
 running sdist
 running egg_info
@@ -13,59 +13,55 @@ reading manifest file 'obsidian_pdf_gen.egg-info\SOURCES.txt'
 reading manifest template 'MANIFEST.in'
 writing manifest file 'obsidian_pdf_gen.egg-info\SOURCES.txt'
 running check
-warning: check: missing required meta-data: url
-
 warning: check: missing meta-data: if 'author' supplied, 'author_email' must be supplied too
 
-creating obsidian_pdf_gen-1.6.1
-creating obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info
-creating obsidian_pdf_gen-1.6.1\obsidian_pdf_gen
-creating obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\config
-creating obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\generate_pdf
-creating obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\media_retriever
-copying files to obsidian_pdf_gen-1.6.1...
-copying LICENSE -> obsidian_pdf_gen-1.6.1
-copying MANIFEST.in -> obsidian_pdf_gen-1.6.1
-copying README.md -> obsidian_pdf_gen-1.6.1
-copying setup.py -> obsidian_pdf_gen-1.6.1
-copying obsidian_pdf_gen.egg-info\PKG-INFO -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info
-copying obsidian_pdf_gen.egg-info\SOURCES.txt -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info
-copying obsidian_pdf_gen.egg-info\dependency_links.txt -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info
-copying obsidian_pdf_gen.egg-info\entry_points.txt -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info
-copying obsidian_pdf_gen.egg-info\requires.txt -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info
-copying obsidian_pdf_gen.egg-info\top_level.txt -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info
-copying obsidian_pdf_gen.egg-info\zip-safe -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info
-copying obsidian_pdf_gen\config\__init__.py -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\config
-copying obsidian_pdf_gen\config\note_configs.yaml -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\config
-copying obsidian_pdf_gen\generate_pdf\__init__.py -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\generate_pdf
-copying obsidian_pdf_gen\generate_pdf\md_notes_pdf.py -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\generate_pdf
-copying obsidian_pdf_gen\media_retriever\__init__.py -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\media_retriever
-copying obsidian_pdf_gen\media_retriever\tools.py -> obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\media_retriever
-Writing obsidian_pdf_gen-1.6.1\setup.cfg
-creating '.tox\dist\obsidian_pdf_gen-1.6.1.zip' and adding 'obsidian_pdf_gen-1.6.1' to it
-adding 'obsidian_pdf_gen-1.6.1'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info'
-adding 'obsidian_pdf_gen-1.6.1\LICENSE'
-adding 'obsidian_pdf_gen-1.6.1\MANIFEST.in'
-adding 'obsidian_pdf_gen-1.6.1\PKG-INFO'
-adding 'obsidian_pdf_gen-1.6.1\README.md'
-adding 'obsidian_pdf_gen-1.6.1\setup.cfg'
-adding 'obsidian_pdf_gen-1.6.1\setup.py'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\config'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\generate_pdf'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\media_retriever'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\config\note_configs.yaml'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\config\__init__.py'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\generate_pdf\md_notes_pdf.py'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\generate_pdf\__init__.py'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\media_retriever\tools.py'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen\media_retriever\__init__.py'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info\dependency_links.txt'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info\entry_points.txt'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info\PKG-INFO'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info\requires.txt'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info\SOURCES.txt'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info\top_level.txt'
-adding 'obsidian_pdf_gen-1.6.1\obsidian_pdf_gen.egg-info\zip-safe'
-removing 'obsidian_pdf_gen-1.6.1' (and everything under it)
+creating obsidian_pdf_gen-1.7.0
+creating obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info
+creating obsidian_pdf_gen-1.7.0\obsidian_pdf_gen
+creating obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\config
+creating obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\generate_pdf
+creating obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\media_retriever
+copying files to obsidian_pdf_gen-1.7.0...
+copying MANIFEST.in -> obsidian_pdf_gen-1.7.0
+copying README.md -> obsidian_pdf_gen-1.7.0
+copying setup.py -> obsidian_pdf_gen-1.7.0
+copying obsidian_pdf_gen.egg-info\PKG-INFO -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info
+copying obsidian_pdf_gen.egg-info\SOURCES.txt -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info
+copying obsidian_pdf_gen.egg-info\dependency_links.txt -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info
+copying obsidian_pdf_gen.egg-info\entry_points.txt -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info
+copying obsidian_pdf_gen.egg-info\requires.txt -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info
+copying obsidian_pdf_gen.egg-info\top_level.txt -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info
+copying obsidian_pdf_gen.egg-info\zip-safe -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info
+copying obsidian_pdf_gen\config\__init__.py -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\config
+copying obsidian_pdf_gen\config\note_configs.yaml -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\config
+copying obsidian_pdf_gen\generate_pdf\__init__.py -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\generate_pdf
+copying obsidian_pdf_gen\generate_pdf\md_notes_pdf.py -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\generate_pdf
+copying obsidian_pdf_gen\media_retriever\__init__.py -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\media_retriever
+copying obsidian_pdf_gen\media_retriever\tools.py -> obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\media_retriever
+Writing obsidian_pdf_gen-1.7.0\setup.cfg
+creating '.tox\dist\obsidian_pdf_gen-1.7.0.zip' and adding 'obsidian_pdf_gen-1.7.0' to it
+adding 'obsidian_pdf_gen-1.7.0'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info'
+adding 'obsidian_pdf_gen-1.7.0\MANIFEST.in'
+adding 'obsidian_pdf_gen-1.7.0\PKG-INFO'
+adding 'obsidian_pdf_gen-1.7.0\README.md'
+adding 'obsidian_pdf_gen-1.7.0\setup.cfg'
+adding 'obsidian_pdf_gen-1.7.0\setup.py'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\config'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\generate_pdf'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\media_retriever'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\config\note_configs.yaml'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\config\__init__.py'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\generate_pdf\md_notes_pdf.py'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\generate_pdf\__init__.py'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\media_retriever\tools.py'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen\media_retriever\__init__.py'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info\dependency_links.txt'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info\entry_points.txt'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info\PKG-INFO'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info\requires.txt'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info\SOURCES.txt'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info\top_level.txt'
+adding 'obsidian_pdf_gen-1.7.0\obsidian_pdf_gen.egg-info\zip-safe'
+removing 'obsidian_pdf_gen-1.7.0' (and everything under it)

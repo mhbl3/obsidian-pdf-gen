@@ -83,6 +83,20 @@ class TestPdfGen:
                 False,
                 False,
             ),
+            (
+                None,
+                "./test_files/Damping Ratio.md",
+                "./test_files/Damping Ratio.tex",
+                False,
+                False,
+            ),
+            (
+                None,
+                "./test_files/note_with_image.md",
+                "./test_files/note_with_image.tex",
+                False,
+                False,
+            ),
         ],
         ids=[
             "simple case, one code block",
@@ -95,6 +109,8 @@ class TestPdfGen:
             "quote_block",
             "front_matter",
             "hyperlinks",
+            "complexed_note",
+            "note_with_image",
         ],
     )
     def test_ObsiPdfGenerator(self, note, note_paths, path, colorfull_headers, toc):
