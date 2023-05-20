@@ -981,7 +981,7 @@ linenos
                 "pdflatex",
                 "-quiet",
                 "-interaction",
-                "batchmode",
+                "nonstopmode",
                 "-shell-escape",
                 path,
             ]
@@ -989,7 +989,7 @@ linenos
             cmd_line = [
                 "pdflatex",
                 "-interaction",
-                "batchmode",
+                "nonstopmode",
                 "-shell-escape",
                 path,
             ]
