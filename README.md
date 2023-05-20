@@ -45,4 +45,4 @@ Using this [shortcut](https://www.icloud.com/shortcuts/6bca6376fa49422885d8972bb
 ## Setting your default vault and select it.
 On iOS you need to setup your default vault. You can use this [shortcut](https://www.icloud.com/shortcuts/4b22c1fc8afd47ccb1d088a3f951f9b9) to `pickFolder` a folder outside of the a-shell folder. Use this to navigate to your vault
 ## Generating a pdf
-When in Obsidian use the share sheet to generate a pdf of the note that you're on by selecting **Generate Obsidian Note PDF**. This should be an option in your share sheet after downloading this [shortcuts](https://www.icloud.com/shortcuts/e2106e7b1ce54f11a9511f8d33994131)
+When in Obsidian use the share sheet to generate a pdf of the note that you're on by selecting **Generate Obsidian Note PDF**. This should be an option in your share sheet after downloading this [shortcuts](https://www.icloud.com/shortcuts/a28954ec37c34e778f6047912761983f)

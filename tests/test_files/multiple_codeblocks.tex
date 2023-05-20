@@ -57,7 +57,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}
 \begin{document}
 
 
-\chapter{Multiple Codeblocks}
+\chapter{Multiple Codeblocks}\label{ch:Multiple Codeblocks}
 
 \section{Using pandas}
 
@@ -68,9 +68,14 @@ Let's import pandas:
 \begin{minted}[
 frame=lines,
 framesep=2mm,
+label=python,
+framerule=0.4pt,
+python3=true,
 baselinestretch=1.2,
+breaklines=true,
 bgcolor=LightGray,
 fontsize=\footnotesize,
+fontfamily=monospace,
 linenos
 ]{python}
 import pandas as pd
@@ -83,14 +88,53 @@ We can create a \textbf{dataframe} like this:
 \begin{minted}[
 frame=lines,
 framesep=2mm,
+label=python,
+framerule=0.4pt,
+python3=true,
 baselinestretch=1.2,
+breaklines=true,
 bgcolor=LightGray,
 fontsize=\footnotesize,
+fontfamily=monospace,
 linenos
 ]{python}
 df = pd.DataFrame(data={"Animal": ["Cat", "Dog"],
                         "Name": ["Zoya", "Hash"]})
 \end{minted}
             
+
+
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+label=python,
+framerule=0.4pt,
+python3=true,
+baselinestretch=1.2,
+breaklines=true,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+fontfamily=monospace,
+linenos
+]{python}
+"A veeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrryyyyyyyyyyy looooooooooooooooooooooooooooooooooooonnnnnnnnnnng liiiiiiiiiiiinnnneeeeeeeeeeee "
+\end{minted}
+            
+
+
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+framerule=0.4pt,
+breaklines=true,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
+]{text}
+pip install .
+\end{minted}
+            
+
 That's it!
 \end{document}

@@ -54,33 +54,22 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}
 \makeatother
 \sethlcolor{yellow}
 \newrobustcmd*\inlinecode[2][]{\textcolor{inlinecodecolor}{\mintinline[#1]{python}{#2}}}
-\sectionfont{\color{red}}
-\subsectionfont{\color{orange}}
-\subsubsectionfont{\color{yellow}}
-\newcommand{\myparagraph}[1]{\paragraph{\textcolor{Green}{#1}}\mbox{}\\}
-\newcommand{\mysubparagraph}[1]{\subparagraph{\textcolor{blue}{#1}}\mbox{}\\}
 \begin{document}
 
 
-\chapter{Colorful Headers}\label{ch:Colorful Headers}
+\chapter{Footnotes}\label{ch:Footnotes}
 
-\section{H1}
 
-Hi
 
-\subsection{H2}
 
-These
 
-\subsubsection{H3}
+Hello, this is a test with a footnote.\footnote[1]{See this footnote.
+}
 
-are
 
-\myparagraph{H4}
 
-colorful
+We can have multile footnotes\footnote[2]{Another footnote.}
 
-\mysubparagraph{H5}
 
-headers!
+
 \end{document}

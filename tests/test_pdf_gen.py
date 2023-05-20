@@ -109,6 +109,14 @@ class TestPdfGen:
                 False,
                 1.2,
             ),
+            (
+                None,
+                "./test_files/footnotes.md",
+                "./test_files/footnotes.tex",
+                False,
+                False,
+                1,
+            ),
         ],
         ids=[
             "simple case, one code block",
@@ -123,6 +131,7 @@ class TestPdfGen:
             "hyperlinks",
             "complexed_note",
             "note_with_image",
+            "footnotes",
         ],
     )
     def test_ObsiPdfGenerator(
