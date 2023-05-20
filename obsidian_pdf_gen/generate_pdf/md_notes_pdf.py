@@ -870,7 +870,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
 \\begin{{minted}}[
 frame=lines,
 framesep=2mm,
-label={language},
+label={label},
 framerule={CONFIG["code"]["frame rule"]},
 python3={python3},
 baselinestretch=1.2,
