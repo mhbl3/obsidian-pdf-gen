@@ -10,4 +10,13 @@ We can create a **dataframe** like this:
 df = pd.DataFrame(data={"Animal": ["Cat", "Dog"],
                         "Name": ["Zoya", "Hash"]})
 ```
+
+```python
+"A veeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrryyyyyyyyyyy looooooooooooooooooooooooooooooooooooonnnnnnnnnnng liiiiiiiiiiiinnnneeeeeeeeeeee "
+```
+
+```
+pip install .
+```
+
 That's it!

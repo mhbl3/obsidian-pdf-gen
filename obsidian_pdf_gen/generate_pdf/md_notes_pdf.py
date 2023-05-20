@@ -859,14 +859,25 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
         Returns:
             str: Return the transformed line.
         """
+        python3 = "true" if language.lower() == "python" else "false"
         if (language != "") and (language.lower() != "plaintext"):
+            label = CONFIG["code"]["label"]
+            if label:
+                label = language
+            else:
+                label = "none"
             line = f"""
 \\begin{{minted}}[
 frame=lines,
 framesep=2mm,
+label={language},
+framerule={CONFIG["code"]["frame rule"]},
+python3={python3},
 baselinestretch=1.2,
+breaklines=true,
 bgcolor=LightGray,
 fontsize=\\footnotesize,
+fontfamily={CONFIG["code"]["font family"]},
 linenos
 ]{{{language}}}
 {line}
@@ -878,6 +889,9 @@ linenos
 frame=lines,
 framesep=2mm,
 baselinestretch=1.2,
+framerule={CONFIG["code"]["frame rule"]},
+fontfamily={CONFIG["code"]["font family"]},
+breaklines=true,
 bgcolor=LightGray,
 fontsize=\\footnotesize,
 linenos
