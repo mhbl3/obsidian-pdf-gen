@@ -538,7 +538,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
             line, current_line_idx, note_content
         )
         line, additional_lines_to_skip = self.find_replace_footnotes(
-            note_content, current_line_idx
+            line, note_content, current_line_idx
         )
         lines_to_skip += additional_lines_to_skip
         logger.debug(f"is_math: {is_math}")
@@ -914,17 +914,19 @@ linenos
             f.write(self.document)
 
     @staticmethod
-    def find_replace_footnotes(lines: list, current_line_idx: int) -> Tuple[str, list]:
+    def find_replace_footnotes(
+        line: str, lines: list, current_line_idx: int
+    ) -> Tuple[str, list]:
         """Find all footnotes in the text and return the text without the footnotes and the list of footnotes.
 
         Args:
+            line (str): Line to search for footnotes.
             lines (list): List containing line to search for footnotes
             current_line_idx (int): Index of the current line in the list of lines.
 
         Returns:
-            Tuple[str, list]: Text with replaced footnotes.
+            Tuple[str, list]: Text with replaced footnotes, and list of lines to skip.
         """
-        line = lines[current_line_idx]
         footnotes = re.findall(r"\[\^(\d+)\]", line)
         lines_to_skip = []
         for footnote in footnotes:
