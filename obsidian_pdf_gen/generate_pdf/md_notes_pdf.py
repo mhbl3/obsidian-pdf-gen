@@ -430,7 +430,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
         if len(additional_notes) > 0:
             links = re.findall(r"\[\[(.*?)\]\]", line)
             for link in links:
-                logger.info(f"link: {link}")
+                logger.debug(f"link: {link}")
                 # In case there are multiple separators, but this does happen really when linking notes.
                 # It does happen for pictures, to the best of my knownledge.
                 alias_idx = -1 if link.count("|") <= 1 else 1
@@ -438,7 +438,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
                 split_link_alias = link.split("|")[alias_idx].lstrip()
                 split_link = f"\\hyperref[ch:{split_link_file}]{{{split_link_alias}}}"
                 line = line.replace(f"[[{link}]]", split_link)
-                logger.info(f"line: {line}")
+                logger.debug(f"line: {line}")
                 note_content[current_line_idx] = line
 
         logger.debug(f"is_table: {is_table}")
@@ -537,6 +537,10 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
         line, lines_to_skip, is_math = self.keep_math(
             line, current_line_idx, note_content
         )
+        line, additional_lines_to_skip = self.find_replace_footnotes(
+            note_content, current_line_idx
+        )
+        lines_to_skip += additional_lines_to_skip
         logger.debug(f"is_math: {is_math}")
         if is_math:
             return line, lines_to_skip, additional_notes
@@ -545,15 +549,17 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
         logger.debug(f"is_section: {is_section}")
         if is_section:
             return line, lines_to_skip, additional_notes
-        line, lines_to_skip, is_codeblock = self.replace_md_code_block(
+        line, additional_lines_to_skip, is_codeblock = self.replace_md_code_block(
             line, current_line_idx, note_content
         )
+        lines_to_skip += additional_lines_to_skip
         logger.debug(f"is_codeblock: {is_codeblock}")
         if is_codeblock:
             return line, lines_to_skip, additional_notes
-        line, lines_to_skip, is_bullet_point = self.replace_md_bullet_point(
+        line, additional_lines_to_skip, is_bullet_point = self.replace_md_bullet_point(
             line, current_line_idx, note_content, CONFIG["indent"]
         )
+        lines_to_skip += additional_lines_to_skip
         if is_bullet_point:
             return line, lines_to_skip, additional_notes
 
@@ -906,6 +912,45 @@ linenos
         # Save file
         with open(path, "w", encoding="utf-8") as f:
             f.write(self.document)
+
+    @staticmethod
+    def find_replace_footnotes(lines: list, current_line_idx: int) -> Tuple[str, list]:
+        """Find all footnotes in the text and return the text without the footnotes and the list of footnotes.
+
+        Args:
+            lines (list): List containing line to search for footnotes
+            current_line_idx (int): Index of the current line in the list of lines.
+
+        Returns:
+            Tuple[str, list]: Text with replaced footnotes.
+        """
+        line = lines[current_line_idx]
+        footnotes = re.findall(r"\[\^(\d+)\]", line)
+        lines_to_skip = []
+        for footnote in footnotes:
+            foot_note_in_line = f"[^{footnote}]"
+            logger.debug(f"foot_note_in_line: {foot_note_in_line}")
+            # Search through the lines after the current line for the footnote definition
+            # Manage when the next line is the last line
+            length_lines = (
+                len(lines) if current_line_idx + 1 < len(lines) else len(lines) + 1
+            )
+            for line_idx in range(current_line_idx + 1, length_lines):
+                if (length_lines > len(lines)) and (line_idx >= len(lines)):
+                    continue
+                check_text = f"{foot_note_in_line}:"
+                if check_text in lines[line_idx]:
+                    # Extract the footnote definition
+                    footnote_definition = (
+                        lines[line_idx].lstrip(f"{check_text}").lstrip()
+                    )
+                    lines_to_skip.append(line_idx)
+                    line = line.replace(
+                        foot_note_in_line,
+                        f"\\footnote[{footnote}]{{{footnote_definition}}}",
+                    )
+                    break
+        return line, lines_to_skip
 
     @staticmethod
     def generate_pdf(

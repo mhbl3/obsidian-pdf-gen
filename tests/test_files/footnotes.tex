@@ -55,93 +55,15 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}
 \sethlcolor{yellow}
 \newrobustcmd*\inlinecode[2][]{\textcolor{inlinecodecolor}{\mintinline[#1]{python}{#2}}}
 \begin{document}
-\tableofcontents
 
 
-\chapter{Linked Notes 1}\label{ch:Linked Notes 1}
-
-\# This is an example of linked notes
+\chapter{Footnotes}\label{ch:Footnotes}
 
 
-I have noted some groceries and places I visited in the \hyperref[ch:Bullet Points]{bullet points} doc. Did you check it out?
-\chapter{Bullet Points}\label{ch:Bullet Points}
-
-\# Bullet Point Example
 
 
-In my shopping list, I have:
 
-\begin{itemize}
-\item Bread
-\item Egg
+Hello, this is a test with a footnote.\footnote[1]{See this footnote.}
 
-\item Milk
-
-\end{itemize}
-
-
-Visited continent/countries/cities:
-
-\begin{itemize}
-\item Africa
-\begin{itemize}
-\item Cote d'Ivoire
-
-\begin{itemize}
-\item Abidjan
-
-\item Man
-
-\end{itemize}
-\end{itemize}
-\item Europe
-
-\begin{itemize}
-\item France
-
-\begin{itemize}
-\item Paris
-
-\end{itemize}
-\item Germany
-
-\begin{itemize}
-\item Berlin
-
-\end{itemize}
-\end{itemize}
-\item Asia
-
-\begin{itemize}
-\item India
-
-\begin{itemize}
-\item New Delhi
-
-\end{itemize}
-\end{itemize}
-\end{itemize}
-
-
-\# Bullet points with code
-
-\begin{itemize}
-\item `USA`
-\begin{itemize}
-\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{New York}
-
-\begin{itemize}
-\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{New York City}
-
-\end{itemize}
-\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{California}
-
-\begin{itemize}
-\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{Los Angeles}
-
-\item \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{San Francisco}
-\end{itemize}
-\end{itemize}
-\end{itemize}
 
 \end{document}

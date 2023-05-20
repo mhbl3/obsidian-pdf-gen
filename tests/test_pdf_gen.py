@@ -111,8 +111,8 @@ class TestPdfGen:
             ),
             (
                 None,
-                "./test_files/footnote.md",
-                "./test_files/footnote.tex",
+                "./test_files/footnotes.md",
+                "./test_files/footnotes.tex",
                 False,
                 False,
                 1,
