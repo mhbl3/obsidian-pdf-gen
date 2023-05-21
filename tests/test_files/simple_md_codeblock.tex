@@ -19,7 +19,7 @@
 
 \usepackage{csquotes}
 
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 
 \usepackage[T1]{fontenc}
 
@@ -79,8 +79,10 @@ linenos
 ]{python}
 import numpy as np
 
-a = np.linspace(0, 10)
+a_var = np.linspace(0, 10)
 \end{minted}
             
+Where the a\_var variable is an array.
+
 \textit{This} \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{works}, right? \pill{\#test}
 \end{document}

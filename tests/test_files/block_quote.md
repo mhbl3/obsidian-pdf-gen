@@ -8,3 +8,7 @@ And now just a block quote:
 > Learn from yesterday, live for today, hope for tomorrow.
 > The important thing is not to stop questioning.
 > _Albert Einstein_, $E=MC^2$
+
+> [!NOTE] A more complex callout
+>- Creating `something` new
+>- Adding functionalities to `obsidian_pdf`

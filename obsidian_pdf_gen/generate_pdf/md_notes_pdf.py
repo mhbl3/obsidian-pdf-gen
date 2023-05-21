@@ -85,7 +85,7 @@ class ObsiPdfGenerator:
 
 \\usepackage{{csquotes}}
 
-\\usepackage{{hyperref}}
+\\usepackage[hidelinks]{{hyperref}}
 
 \\usepackage[T1]{{fontenc}}
 
@@ -272,37 +272,29 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
     @staticmethod
     def replace_text_style(line: str) -> str:
         """Replace a bunch of markdown syntax to latex.
+            Saves all the non-transformed text, applies the
+            transformations and reverts then when needed.
 
         Args:
             line (str): Current line of the note.
 
         Returns:
-            str: Trsnsformed line.
+            str: Transformed line.
         """
         # check if math equation is present
         if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
             (line.count("$$") % 1 == 0) and ((line.count("$$") > 1))
         ):
-            original_content = re.findall(r"\$\$(.*?)\$\$", line) + re.findall(
+            original_content_math = re.findall(r"\$\$(.*?)\$\$", line) + re.findall(
                 r"\$(.*?)\$", line
             )
-
         # Find italic words
         all_italics = re.findall(r"_(.*?)_", line)
-        for word in all_italics:
-            line = line.replace(f"_{word}_", f"\\textit{{{word}}}")
-
         # Find bold words
         all_bolds = re.findall(r"\*\*(.*?)\*\*", line)
-        for word in all_bolds:
-            line = line.replace(f"**{word}**", f"\\textbf{{{word}}}")
-
         # Find highlighted words
         all_hls = re.findall(r"==(.*?)==", line)
-        for word in all_hls:
-            line = line.replace(f"=={word}==", f"\\hl{{{word}}}")
-
-        # Replace hyperlinks
+        link_bool = False
         if (
             "[" in line
             and "]" in line
@@ -312,25 +304,55 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
         ):
             links = re.findall(r"\]\((.*?)\)", line)
             text_for_links = re.findall(r"\[(.*?)\]\(", line)
-            for txt, link in zip(text_for_links, links):
-                line = line.replace(f"[{txt}]({link})", f"\\href{{{link}}}{{{txt}}}")
-
+            link_bool = True
         # Find all inline code
         all_inline = re.findall(r"`(.+?)`", line)
-        for word in all_inline:
+
+        # Apply latex changes to special characters
+        line = line.replace("&", "\\&")
+        line = line.replace("%", "\\%")
+        # line = line.replace("$", "\\$")
+        # line = line.replace(">", "\\>")
+        # line = line.replace("<", "\\<")
+        line = line.replace("#", "\\#")
+        line = line.replace("---", "\\noindent\\rule[0.5ex]{\\linewidth}{1pt}")
+        line = line.replace("***", "\\noindent\\rule[0.5ex]{\\linewidth}{1pt}")
+        line = line.replace("_", "\\_")
+
+        for word, word_new in zip(all_italics, re.findall(r"\\_(.*?)\\_", line)):
+            line = line.replace(f"\\_{word_new}\\_", f"\\textit{{{word}}}")
+        for word, word_new in zip(all_bolds, re.findall(r"\*\*(.*?)\*\*", line)):
+            line = line.replace(f"**{word_new}**", f"\\textbf{{{word}}}")
+        for word, word_new in zip(all_hls, re.findall(r"==(.*?)==", line)):
+            line = line.replace(f"=={word_new}==", f"\\hl{{{word}}}")
+
+        # Replace hyperlinks
+        if link_bool:
+            links_new = re.findall(r"\]\((.*?)\)", line)
+            text_for_links_new = re.findall(r"\[(.*?)\]\(", line)
+            for txt, link, txt_new, link_new in zip(
+                text_for_links, links, text_for_links_new, links_new
+            ):
+                line = line.replace(
+                    f"[{txt_new}]({link_new})", f"\\href{{{link}}}{{{txt}}}"
+                )
+
+        for word, word_new in zip(all_inline, re.findall(r"`(.+?)`", line)):
             if word != "`":
                 line = line.replace(
-                    f"`{word}`",
+                    f"`{word_new}`",
                     "\\inlinecode[bgcolor=LightGray, fontsize=\\scriptsize]{"
                     + word
                     + "}",
                 )
-
         # Find and replace tags
         for word in line.split():
-            if word.startswith("#") and len(word) > 1 and word.count("#") == 1:
+            if (
+                (word.startswith("#") or word.startswith("\\#"))
+                and len(word) > 1
+                and ((word.count("#") == 1) or (word.count("\\#") == 1))
+            ):
                 line = line.replace(word, f"\\pill{{{word}}}")
-
         # Reverse these fixes if they are in a math block
         if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
             (line.count("$$") % 1 == 0) and ((line.count("$$") > 1))
@@ -339,60 +361,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
                 r"\$(.*?)\$", line
             )
             for e, content in enumerate(contents_of_math):
-                line = line.replace(content, original_content[e])
-
-        return line
-
-    @staticmethod
-    def handle_special_characters(line: str) -> str:
-        """Handle special characters, and replaces markown with latex syntax.
-
-        Args:
-            line (str): Current line of the note.
-
-        Returns:
-            str: Transformed line.
-        """
-        replace_underscore = True
-        # check if math equation is present
-        if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
-            (line.count("$$") % 1 == 0) and ((line.count("$$") > 1))
-        ):
-            original_content = re.findall(r"\$\$(.*?)\$\$", line) + re.findall(
-                r"\$(.*?)\$", line
-            )
-        # Check if inline code is present
-        if (line.count("`") % 1 == 0) and (line.count("`") > 1):
-            original_content_inline = re.findall(r"`(.*?)`", line)
-
-        line = line.replace("&", "\\&")
-        line = line.replace("%", "\\%")
-        # line = line.replace("$", "\\$")
-        line = line.replace(">", "\\>")
-        line = line.replace("<", "\\<")
-        line = line.replace("#", "\\#")
-        line = line.replace("---", "\\noindent\\rule[0.5ex]{\\linewidth}{1pt}")
-        line = line.replace("***", "\\noindent\\rule[0.5ex]{\\linewidth}{1pt}")
-        # Reverse these fixes if they are in a math block
-        if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
-            (line.count("$$") % 1 == 0) and ((line.count("$$") > 1))
-        ):
-            contents_of_math = re.findall(r"\$\$(.*?)\$\$", line) + re.findall(
-                r"\$(.*?)\$", line
-            )
-            for e, content in enumerate(contents_of_math):
-                line = line.replace(content, original_content[e])
-            replace_underscore = False
-        if (line.count("`") % 1 == 0) and (line.count("`") > 1):
-            content_of_inline = re.findall(r"`(.*?)`", line)
-            for e, content in enumerate(content_of_inline):
-                line = line.replace(content, original_content_inline[e])
-            replace_underscore = False
-        if replace_underscore:
-            line = line.replace("_", "\\_")
-        # line = line.replace("\\", "\\\\")
-        # line = line.replace("{", "\\{")
-        # line = line.replace("}", "\\}")
+                line = line.replace(content, original_content_math[e])
         return line
 
     # Find and add linked notes
@@ -489,23 +458,22 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
             txt_to_replace = re.findall(r"\[!(.*?)\]", line)
             if len(txt_to_replace) > 0:
                 txt_to_replace = txt_to_replace[0]
-                line = self.handle_special_characters(
-                    self.replace_text_style(
-                        line.replace(f"[!{txt_to_replace}]", "").lstrip(">").lstrip()
-                    )
+                line = self.replace_text_style(
+                    line.replace(f"[!{txt_to_replace}]", "").lstrip(">").lstrip()
                 )
+                logger.debug(f"line-convert_callouts_block_text-1-true = {line}")
                 line = "\\begin{tcolorbox}" + f"[title={line}]\n"
             else:
-                line = "\\begin{advtcolorbox}\n" + self.handle_special_characters(
+                line = "\\begin{advtcolorbox}\n" + (
                     self.replace_text_style(line.lstrip(">").lstrip() + "\n")
                 )
+                logger.debug(f"line-convert_callouts_block_text-1-false = {line}")
 
             for idx_blocks in lines_to_skip[1:]:
-                line += self.handle_special_characters(
-                    self.replace_text_style(
-                        note_content[idx_blocks].lstrip(">").lstrip() + "\n"
-                    )
+                line += self.replace_text_style(
+                    note_content[idx_blocks].lstrip(">").lstrip() + "\n"
                 )
+                logger.debug(f"line-convert_callouts_block_text-2 = {line}")
 
             if len(txt_to_replace) > 0:
                 line += "\\end{tcolorbox}\n"
@@ -532,8 +500,14 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
         Returns:
             Tuple[str, list, list]: Return the transformed line, a list of lines to skip and a list of additional notes.
         """
-        line = self.replace_text_style(line)
+        lines_to_skip = []
         line, is_section = self.replace_md_headers(line)
+        logger.debug(f"is_section: {is_section}")
+        if is_section:
+            return line, lines_to_skip, additional_notes
+
+        line = self.replace_text_style(line)
+        logger.debug(f"line-apply_conv_rt = {line}")
         line, lines_to_skip, is_math = self.keep_math(
             line, current_line_idx, note_content
         )
@@ -545,10 +519,6 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
         if is_math:
             return line, lines_to_skip, additional_notes
 
-        line = self.handle_special_characters(line)
-        logger.debug(f"is_section: {is_section}")
-        if is_section:
-            return line, lines_to_skip, additional_notes
         line, additional_lines_to_skip, is_codeblock = self.replace_md_code_block(
             line, current_line_idx, note_content
         )
@@ -753,6 +723,9 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
             ):
                 logger.debug(f"ln = {ln}")
                 line_after_line = self.replace_text_style(line_after_line)
+                logger.debug(
+                    f"line_after_line-replace_md_bullet_point = {line_after_line}"
+                )
                 if line_after_line.lstrip().startswith("-"):
                     ls_line_after_line = line_after_line.lstrip()
                     space_diff = len(line_after_line) - len(ls_line_after_line)
