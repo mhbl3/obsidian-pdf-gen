@@ -83,6 +83,13 @@ class TestPdfGen:
                 False,
                 False,
             ),
+            (
+                None,
+                "./test_files/header_levels.md",
+                "./test_files/header_levels.tex",
+                False,
+                False,
+            ),
         ],
         ids=[
             "simple case, one code block",
@@ -95,6 +102,7 @@ class TestPdfGen:
             "quote_block",
             "front_matter",
             "hyperlinks",
+            "header_levels",
         ],
     )
     def test_ObsiPdfGenerator(self, note, note_paths, path, colorfull_headers, toc):

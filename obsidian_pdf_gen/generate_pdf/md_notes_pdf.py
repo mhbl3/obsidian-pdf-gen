@@ -62,6 +62,8 @@ class ObsiPdfGenerator:
 \\usepackage{{enumitem}}
 \\setlistdepth{{9}}
 
+\\setcounter{{secnumdepth}}{{header_level}}
+
 \\setlist[itemize,1]{{label=\\textbullet}}
 \\setlist[itemize,2]{{label=\\textbullet}}
 \\setlist[itemize,3]{{label=\\textbullet}}
@@ -93,6 +95,9 @@ class ObsiPdfGenerator:
     borderline west={{4pt}}{{0pt}}{{gray}},
 }}
 
+% Remove paragraph indentation
+\\setlength{{\\parindent}}{{0pt}}
+
 \\usepackage{{amsmath}}
 \\usepackage[dvipsnames]{{xcolor}} % to access the named colour LightGray
 \\usepackage{{soul}}
@@ -100,14 +105,24 @@ class ObsiPdfGenerator:
 \\definecolor{{LightGray}}{{rgb}}{{0.9, 0.9, 0.9}}
 \\definecolor{{inlinecodecolor}}{{rgb}}{{0, 0.3, 0.6}}
 \\usepackage{{lmodern}}
+
 \\makeatletter
 \\renewcommand\\subparagraph{{%
 \\@startsection{{subparagraph}}{{5}}{{0pt}}%
 {{3.25ex \\@plus 1ex \\@minus .2ex}}{{-1em}}%
+{{\\normalfont\\normalsize}}}}
+\\makeatother
+
+\\makeatletter
+\\renewcommand\\paragraph{{%
+\\@startsection{{paragraph}}{{4}}{{0pt}}%
+{{3.25ex \\@plus -1ex \\@minus .2ex}}{{-1em}}%
 {{\\normalfont\\normalsize\\bfseries}}}}
 \\makeatother
 """
 
+        # Add the level for headers to be numbered
+        self.document = self.document.replace("header_level", str(CONFIG["Header"]["Level"]))
         self.document += "\\sethlcolor{{" + hl_color + "}}" + "\n"
         if font_style:
             self.document += "\\usepackage{{" + font_style + "}}" + "\n"
@@ -120,11 +135,11 @@ class ObsiPdfGenerator:
         )
 
         if colorfull_headers:
-            h1 = CONFIG["Header Colors"]["\\#"]
-            h2 = CONFIG["Header Colors"]["\\##"]
-            h3 = CONFIG["Header Colors"]["\\###"]
-            h4 = CONFIG["Header Colors"]["\\####"]
-            h5 = CONFIG["Header Colors"]["\\#####"]
+            h1 = CONFIG["Header"]["Colors"]["\\#"]
+            h2 = CONFIG["Header"]["Colors"]["\\##"]
+            h3 = CONFIG["Header"]["Colors"]["\\###"]
+            h4 = CONFIG["Header"]["Colors"]["\\####"]
+            h5 = CONFIG["Header"]["Colors"]["\\#####"]
             self.document += r"\sectionfont{{" + "\\color{{" + h1 + "}}" + "}}" + "\n"
             self.document += (
                 r"\subsectionfont{{" + "\\color{{" + h2 + "}}" + "}}" + "\n"
@@ -145,6 +160,28 @@ class ObsiPdfGenerator:
                 "\\newcommand{{\\mysubparagraph}}[1]{{\\subparagraph{{"
                 + "\\textcolor{{"
                 + h5
+                + "}}"
+                + "{{#1}}"
+                + "}}\\mbox{{}}\\\\}}"
+                + "\n"
+            )
+        else:
+            black_color = "black"
+            # Level 4
+            self.document += (
+                "\\newcommand{{\\myparagraph}}[1]{{\\paragraph{{"
+                + "\\textcolor{{"
+                + black_color
+                + "}}"
+                + "{{#1}}"
+                + "}}\\mbox{{}}\\\\}}"
+                + "\n"
+            )
+            # Level 5
+            self.document += (
+                "\\newcommand{{\\mysubparagraph}}[1]{{\\subparagraph{{"
+                + "\\textcolor{{"
+                + black_color
                 + "}}"
                 + "{{#1}}"
                 + "}}\\mbox{{}}\\\\}}"
@@ -564,9 +601,12 @@ class ObsiPdfGenerator:
             count_lead_hashtags = len(line) - len(lstrip_line_hashtag)
             # Empty str means that it's not an hastag
             if lstrip_line_hashtag[0] == " ":
-                if count_lead_hashtags == 5:
+                if count_lead_hashtags >= 5:
+                    # Default for all other levels
+                    hashtags = ["#"] * count_lead_hashtags
+                    hashtags = "".join(hashtags)
                     line = (
-                        f"\\mysubparagraph{{{lstrip_line_space.replace('##### ', '')}}}".replace(
+                        f"\\noindent\\mysubparagraph{{{lstrip_line_space.replace(f'{hashtags} ', '')}}}".replace(
                             "\n", ""
                         )
                         + "\n"
@@ -574,7 +614,7 @@ class ObsiPdfGenerator:
                     is_section = True
                 elif count_lead_hashtags == 4:
                     line = (
-                        f"\\myparagraph{{{lstrip_line_space.replace('#### ', '')}}}".replace(
+                        f"\\noindent\\myparagraph{{{lstrip_line_space.replace('#### ', '')}}}".replace(
                             "\n", ""
                         )
                         + "\n"
