@@ -110,7 +110,7 @@ class ObsiPdfGenerator:
 % Remove paragraph indentation
 \\setlength{{\\parindent}}{{0pt}}
 
-\\newtcbox{{\pill}}[1][blue]{{on line,
+\\newtcbox{{\\pill}}[1][blue]{{on line,
 arc=7pt,colback=#1!10!white,colframe=#1!50!black,
 before upper={{\\rule[-3pt]{{0pt}}{{10pt}}}},boxrule=1pt,
 boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
@@ -137,7 +137,6 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
 {{\\normalfont\\normalsize\\bfseries}}}}
 \\makeatother
 """
-
         # Add the level for headers to be numbered
         self.document = self.document.replace("header_level", str(CONFIG["Header"]["Level"]))
         self.document += "\\sethlcolor{{" + hl_color + "}}" + "\n"

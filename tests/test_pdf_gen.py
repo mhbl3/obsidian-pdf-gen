@@ -123,6 +123,7 @@ class TestPdfGen:
                 "./test_files/header_levels.tex",
                 False,
                 False,
+                1,
             ),
         ],
         ids=[
@@ -136,13 +137,10 @@ class TestPdfGen:
             "quote_block",
             "front_matter",
             "hyperlinks",
-<<<<<<< HEAD
             "header_levels",
-=======
             "complexed_note",
             "note_with_image",
             "footnotes",
->>>>>>> 1.7.x
         ],
     )
     def test_ObsiPdfGenerator(
