@@ -2,7 +2,7 @@
 
 In my shopping list, I have:
 - Bread
-- Eggd
+- Egg
 - Milk
 
 Visited continent/countries/cities:

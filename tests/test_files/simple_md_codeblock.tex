@@ -26,7 +26,7 @@
 
 \usepackage{csquotes}
 
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 
 \usepackage[T1]{fontenc}
 
@@ -41,8 +41,15 @@
     borderline west={4pt}{0pt}{gray},
 }
 
+<<<<<<< HEAD
 % Remove paragraph indentation
 \setlength{\parindent}{0pt}
+=======
+\newtcbox{\pill}[1][blue]{on line,
+arc=7pt,colback=#1!10!white,colframe=#1!50!black,
+before upper={\rule[-3pt]{0pt}{10pt}},boxrule=1pt,
+boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}
+>>>>>>> 1.7.x
 
 \usepackage{amsmath}
 \usepackage[dvipsnames]{xcolor} % to access the named colour LightGray
@@ -72,7 +79,7 @@
 \begin{document}
 
 
-\chapter{Simple Md Codeblock}
+\chapter{Simple Md Codeblock}\label{ch:Simple Md Codeblock}
 
 \section{Example}
 
@@ -82,15 +89,22 @@ Note with \textbf{python}:
 \begin{minted}[
 frame=lines,
 framesep=2mm,
+label=python,
+framerule=0.4pt,
+python3=true,
 baselinestretch=1.2,
+breaklines=true,
 bgcolor=LightGray,
 fontsize=\footnotesize,
+fontfamily=monospace,
 linenos
 ]{python}
 import numpy as np
 
-a = np.linspace(0, 10)
+a_var = np.linspace(0, 10)
 \end{minted}
             
-\textit{This} \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{works}, right? \#test
+Where the a\_var variable is an array.
+
+\textit{This} \inlinecode[bgcolor=LightGray, fontsize=\scriptsize]{works}, right? \pill{\#test}
 \end{document}

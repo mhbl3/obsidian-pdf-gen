@@ -27,18 +27,25 @@ with path_to_config.open("r") as f:
 class ObsiPdfGenerator:
     """Generator of pdfs from Obsidian notes."""
 
-    def __init__(self, colorfull_headers: bool = False, include_toc: bool = False):
+    def __init__(
+        self,
+        colorfull_headers: bool = False,
+        include_toc: bool = False,
+        img_width: float = 1.5,
+    ):
         """Initialization of the class responsible for creating the latex doc that will be used to create the pdf.
 
         Args:
             colorfull_headers (bool, optional): Whether or not to have colorful headers in the pdf. Defaults to False.
             include_toc (bool, optional): If `True` the Table of Content will be included in the pdf. Defaults to False.
+            img_width (float, optional): Image width in inches. Defaults to 1.5.
         """
         font_style = CONFIG["font"].get("style", None)
         font_size = CONFIG["font"]["size"]
         inline_code_lang = CONFIG["inline code"]["default language"]
         hl_color = CONFIG.get("highlight color", "yellow")
         document_class = CONFIG["document class"].get("name")
+        self.img_width = img_width
         force_document_class = CONFIG["document class"].get("force document class")
         toc_latex = "\\tableofcontents\n" if include_toc else ""
 
@@ -85,7 +92,7 @@ class ObsiPdfGenerator:
 
 \\usepackage{{csquotes}}
 
-\\usepackage{{hyperref}}
+\\usepackage[hidelinks]{{hyperref}}
 
 \\usepackage[T1]{{fontenc}}
 
@@ -100,8 +107,15 @@ class ObsiPdfGenerator:
     borderline west={{4pt}}{{0pt}}{{gray}},
 }}
 
+<<<<<<< HEAD
 % Remove paragraph indentation
 \\setlength{{\\parindent}}{{0pt}}
+=======
+\\newtcbox{{\pill}}[1][blue]{{on line,
+arc=7pt,colback=#1!10!white,colframe=#1!50!black,
+before upper={{\\rule[-3pt]{{0pt}}{{10pt}}}},boxrule=1pt,
+boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
+>>>>>>> 1.7.x
 
 \\usepackage{{amsmath}}
 \\usepackage[dvipsnames]{{xcolor}} % to access the named colour LightGray
@@ -250,7 +264,9 @@ class ObsiPdfGenerator:
 
                 if use_chapters:
                     # Add the note file name as the chapter name
-                    latex_chapter = "\\chapter{" + note_title + "}\n"
+                    latex_chapter = (
+                        "\\chapter{" + note_title + "}\\label{ch:" + note_title + "}\n"
+                    )
                     tex.append(latex_chapter)
                 # Loop through every line
                 lines_to_skip = []
@@ -272,7 +288,9 @@ class ObsiPdfGenerator:
                         if len(additional_notes) > 0:
                             for graphic in additional_notes:
                                 if ".png" in graphic:
-                                    line = self._include_graphic(graphic)
+                                    line = self._include_graphic(
+                                        graphic, self.img_width
+                                    )
                                     # pop the last line to remve "[[my image.png]]" being present in doc
                                     tex.pop(-1)
                                     tex.append(line)
@@ -298,37 +316,29 @@ class ObsiPdfGenerator:
     @staticmethod
     def replace_text_style(line: str) -> str:
         """Replace a bunch of markdown syntax to latex.
+            Saves all the non-transformed text, applies the
+            transformations and reverts then when needed.
 
         Args:
             line (str): Current line of the note.
 
         Returns:
-            str: Trsnsformed line.
+            str: Transformed line.
         """
         # check if math equation is present
         if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
             (line.count("$$") % 1 == 0) and ((line.count("$$") > 1))
         ):
-            original_content = re.findall(r"\$\$(.*?)\$\$", line) + re.findall(
+            original_content_math = re.findall(r"\$\$(.*?)\$\$", line) + re.findall(
                 r"\$(.*?)\$", line
             )
-
         # Find italic words
         all_italics = re.findall(r"_(.*?)_", line)
-        for word in all_italics:
-            line = line.replace(f"_{word}_", f"\\textit{{{word}}}")
-
         # Find bold words
         all_bolds = re.findall(r"\*\*(.*?)\*\*", line)
-        for word in all_bolds:
-            line = line.replace(f"**{word}**", f"\\textbf{{{word}}}")
-
         # Find highlighted words
         all_hls = re.findall(r"==(.*?)==", line)
-        for word in all_hls:
-            line = line.replace(f"=={word}==", f"\\hl{{{word}}}")
-
-        # Replace hyperlinks
+        link_bool = False
         if (
             "[" in line
             and "]" in line
@@ -338,20 +348,55 @@ class ObsiPdfGenerator:
         ):
             links = re.findall(r"\]\((.*?)\)", line)
             text_for_links = re.findall(r"\[(.*?)\]\(", line)
-            for txt, link in zip(text_for_links, links):
-                line = line.replace(f"[{txt}]({link})", f"\\href{{{link}}}{{{txt}}}")
-
+            link_bool = True
         # Find all inline code
         all_inline = re.findall(r"`(.+?)`", line)
-        for word in all_inline:
+
+        # Apply latex changes to special characters
+        line = line.replace("&", "\\&")
+        line = line.replace("%", "\\%")
+        # line = line.replace("$", "\\$")
+        # line = line.replace(">", "\\>")
+        # line = line.replace("<", "\\<")
+        line = line.replace("#", "\\#")
+        line = line.replace("---", "\\noindent\\rule[0.5ex]{\\linewidth}{1pt}")
+        line = line.replace("***", "\\noindent\\rule[0.5ex]{\\linewidth}{1pt}")
+        line = line.replace("_", "\\_")
+
+        for word, word_new in zip(all_italics, re.findall(r"\\_(.*?)\\_", line)):
+            line = line.replace(f"\\_{word_new}\\_", f"\\textit{{{word}}}")
+        for word, word_new in zip(all_bolds, re.findall(r"\*\*(.*?)\*\*", line)):
+            line = line.replace(f"**{word_new}**", f"\\textbf{{{word}}}")
+        for word, word_new in zip(all_hls, re.findall(r"==(.*?)==", line)):
+            line = line.replace(f"=={word_new}==", f"\\hl{{{word}}}")
+
+        # Replace hyperlinks
+        if link_bool:
+            links_new = re.findall(r"\]\((.*?)\)", line)
+            text_for_links_new = re.findall(r"\[(.*?)\]\(", line)
+            for txt, link, txt_new, link_new in zip(
+                text_for_links, links, text_for_links_new, links_new
+            ):
+                line = line.replace(
+                    f"[{txt_new}]({link_new})", f"\\href{{{link}}}{{{txt}}}"
+                )
+
+        for word, word_new in zip(all_inline, re.findall(r"`(.+?)`", line)):
             if word != "`":
                 line = line.replace(
-                    f"`{word}`",
+                    f"`{word_new}`",
                     "\\inlinecode[bgcolor=LightGray, fontsize=\\scriptsize]{"
                     + word
                     + "}",
                 )
-
+        # Find and replace tags
+        for word in line.split():
+            if (
+                (word.startswith("#") or word.startswith("\\#"))
+                and len(word) > 1
+                and ((word.count("#") == 1) or (word.count("\\#") == 1))
+            ):
+                line = line.replace(word, f"\\pill{{{word}}}")
         # Reverse these fixes if they are in a math block
         if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
             (line.count("$$") % 1 == 0) and ((line.count("$$") > 1))
@@ -360,60 +405,7 @@ class ObsiPdfGenerator:
                 r"\$(.*?)\$", line
             )
             for e, content in enumerate(contents_of_math):
-                line = line.replace(content, original_content[e])
-
-        return line
-
-    @staticmethod
-    def handle_special_characters(line: str) -> str:
-        """Handle special characters, and replaces markown with latex syntax.
-
-        Args:
-            line (str): Current line of the note.
-
-        Returns:
-            str: Transformed line.
-        """
-        replace_underscore = True
-        # check if math equation is present
-        if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
-            (line.count("$$") % 1 == 0) and ((line.count("$$") > 1))
-        ):
-            original_content = re.findall(r"\$\$(.*?)\$\$", line) + re.findall(
-                r"\$(.*?)\$", line
-            )
-        # Check if inline code is present
-        if (line.count("`") % 1 == 0) and (line.count("`") > 1):
-            original_content_inline = re.findall(r"`(.*?)`", line)
-
-        line = line.replace("&", "\\&")
-        line = line.replace("%", "\\%")
-        # line = line.replace("$", "\\$")
-        line = line.replace(">", "\\>")
-        line = line.replace("<", "\\<")
-        line = line.replace("#", "\\#")
-        line = line.replace("---", "\\noindent\\rule[0.5ex]{\\linewidth}{1pt}")
-        line = line.replace("***", "\\noindent\\rule[0.5ex]{\\linewidth}{1pt}")
-        # Reverse these fixes if they are in a math block
-        if ((line.count("$") % 1 == 0) and (line.count("$") > 1)) or (
-            (line.count("$$") % 1 == 0) and ((line.count("$$") > 1))
-        ):
-            contents_of_math = re.findall(r"\$\$(.*?)\$\$", line) + re.findall(
-                r"\$(.*?)\$", line
-            )
-            for e, content in enumerate(contents_of_math):
-                line = line.replace(content, original_content[e])
-            replace_underscore = False
-        if (line.count("`") % 1 == 0) and (line.count("`") > 1):
-            content_of_inline = re.findall(r"`(.*?)`", line)
-            for e, content in enumerate(content_of_inline):
-                line = line.replace(content, original_content_inline[e])
-            replace_underscore = False
-        if replace_underscore:
-            line = line.replace("_", "\\_")
-        # line = line.replace("\\", "\\\\")
-        # line = line.replace("{", "\\{")
-        # line = line.replace("}", "\\}")
+                line = line.replace(content, original_content_math[e])
         return line
 
     # Find and add linked notes
@@ -448,6 +440,20 @@ class ObsiPdfGenerator:
             line = ""
             return line, lines_to_skip, []
         additional_notes = self.check_for_linked_notes(line)
+        if len(additional_notes) > 0:
+            links = re.findall(r"\[\[(.*?)\]\]", line)
+            for link in links:
+                logger.debug(f"link: {link}")
+                # In case there are multiple separators, but this does happen really when linking notes.
+                # It does happen for pictures, to the best of my knownledge.
+                alias_idx = -1 if link.count("|") <= 1 else 1
+                split_link_file = self.extract_note_title(link.split("|")[0])
+                split_link_alias = link.split("|")[alias_idx].lstrip()
+                split_link = f"\\hyperref[ch:{split_link_file}]{{{split_link_alias}}}"
+                line = line.replace(f"[[{link}]]", split_link)
+                logger.debug(f"line: {line}")
+                note_content[current_line_idx] = line
+
         logger.debug(f"is_table: {is_table}")
         if is_table:
             return line, lines_to_skip, additional_notes
@@ -496,23 +502,22 @@ class ObsiPdfGenerator:
             txt_to_replace = re.findall(r"\[!(.*?)\]", line)
             if len(txt_to_replace) > 0:
                 txt_to_replace = txt_to_replace[0]
-                line = self.handle_special_characters(
-                    self.replace_text_style(
-                        line.replace(f"[!{txt_to_replace}]", "").lstrip(">").lstrip()
-                    )
+                line = self.replace_text_style(
+                    line.replace(f"[!{txt_to_replace}]", "").lstrip(">").lstrip()
                 )
+                logger.debug(f"line-convert_callouts_block_text-1-true = {line}")
                 line = "\\begin{tcolorbox}" + f"[title={line}]\n"
             else:
-                line = "\\begin{advtcolorbox}\n" + self.handle_special_characters(
+                line = "\\begin{advtcolorbox}\n" + (
                     self.replace_text_style(line.lstrip(">").lstrip() + "\n")
                 )
+                logger.debug(f"line-convert_callouts_block_text-1-false = {line}")
 
             for idx_blocks in lines_to_skip[1:]:
-                line += self.handle_special_characters(
-                    self.replace_text_style(
-                        note_content[idx_blocks].lstrip(">").lstrip() + "\n"
-                    )
+                line += self.replace_text_style(
+                    note_content[idx_blocks].lstrip(">").lstrip() + "\n"
                 )
+                logger.debug(f"line-convert_callouts_block_text-2 = {line}")
 
             if len(txt_to_replace) > 0:
                 line += "\\end{tcolorbox}\n"
@@ -539,28 +544,36 @@ class ObsiPdfGenerator:
         Returns:
             Tuple[str, list, list]: Return the transformed line, a list of lines to skip and a list of additional notes.
         """
-        line = self.replace_text_style(line)
+        lines_to_skip = []
         line, is_section = self.replace_md_headers(line)
+        logger.debug(f"is_section: {is_section}")
+        if is_section:
+            return line, lines_to_skip, additional_notes
+
+        line = self.replace_text_style(line)
+        logger.debug(f"line-apply_conv_rt = {line}")
         line, lines_to_skip, is_math = self.keep_math(
             line, current_line_idx, note_content
         )
+        line, additional_lines_to_skip = self.find_replace_footnotes(
+            line, note_content, current_line_idx
+        )
+        lines_to_skip += additional_lines_to_skip
         logger.debug(f"is_math: {is_math}")
         if is_math:
             return line, lines_to_skip, additional_notes
 
-        line = self.handle_special_characters(line)
-        logger.debug(f"is_section: {is_section}")
-        if is_section:
-            return line, lines_to_skip, additional_notes
-        line, lines_to_skip, is_codeblock = self.replace_md_code_block(
+        line, additional_lines_to_skip, is_codeblock = self.replace_md_code_block(
             line, current_line_idx, note_content
         )
+        lines_to_skip += additional_lines_to_skip
         logger.debug(f"is_codeblock: {is_codeblock}")
         if is_codeblock:
             return line, lines_to_skip, additional_notes
-        line, lines_to_skip, is_bullet_point = self.replace_md_bullet_point(
+        line, additional_lines_to_skip, is_bullet_point = self.replace_md_bullet_point(
             line, current_line_idx, note_content, CONFIG["indent"]
         )
+        lines_to_skip += additional_lines_to_skip
         if is_bullet_point:
             return line, lines_to_skip, additional_notes
 
@@ -757,6 +770,9 @@ class ObsiPdfGenerator:
             ):
                 logger.debug(f"ln = {ln}")
                 line_after_line = self.replace_text_style(line_after_line)
+                logger.debug(
+                    f"line_after_line-replace_md_bullet_point = {line_after_line}"
+                )
                 if line_after_line.lstrip().startswith("-"):
                     ls_line_after_line = line_after_line.lstrip()
                     space_diff = len(line_after_line) - len(ls_line_after_line)
@@ -863,14 +879,25 @@ class ObsiPdfGenerator:
         Returns:
             str: Return the transformed line.
         """
+        python3 = "true" if language.lower() == "python" else "false"
         if (language != "") and (language.lower() != "plaintext"):
+            label = CONFIG["code"]["label"]
+            if label:
+                label = language
+            else:
+                label = "none"
             line = f"""
 \\begin{{minted}}[
 frame=lines,
 framesep=2mm,
+label={label},
+framerule={CONFIG["code"]["frame rule"]},
+python3={python3},
 baselinestretch=1.2,
+breaklines=true,
 bgcolor=LightGray,
 fontsize=\\footnotesize,
+fontfamily={CONFIG["code"]["font family"]},
 linenos
 ]{{{language}}}
 {line}
@@ -882,6 +909,9 @@ linenos
 frame=lines,
 framesep=2mm,
 baselinestretch=1.2,
+framerule={CONFIG["code"]["frame rule"]},
+fontfamily={CONFIG["code"]["font family"]},
+breaklines=true,
 bgcolor=LightGray,
 fontsize=\\footnotesize,
 linenos
@@ -916,6 +946,47 @@ linenos
         # Save file
         with open(path, "w", encoding="utf-8") as f:
             f.write(self.document)
+
+    @staticmethod
+    def find_replace_footnotes(
+        line: str, lines: list, current_line_idx: int
+    ) -> Tuple[str, list]:
+        """Find all footnotes in the text and return the text without the footnotes and the list of footnotes.
+
+        Args:
+            line (str): Line to search for footnotes.
+            lines (list): List containing line to search for footnotes
+            current_line_idx (int): Index of the current line in the list of lines.
+
+        Returns:
+            Tuple[str, list]: Text with replaced footnotes, and list of lines to skip.
+        """
+        footnotes = re.findall(r"\[\^(\d+)\]", line)
+        lines_to_skip = []
+        for footnote in footnotes:
+            foot_note_in_line = f"[^{footnote}]"
+            logger.debug(f"foot_note_in_line: {foot_note_in_line}")
+            # Search through the lines after the current line for the footnote definition
+            # Manage when the next line is the last line
+            length_lines = (
+                len(lines) if current_line_idx + 1 < len(lines) else len(lines) + 1
+            )
+            for line_idx in range(current_line_idx + 1, length_lines):
+                if (length_lines > len(lines)) and (line_idx >= len(lines)):
+                    continue
+                check_text = f"{foot_note_in_line}:"
+                if check_text in lines[line_idx]:
+                    # Extract the footnote definition
+                    footnote_definition = (
+                        lines[line_idx].lstrip(f"{check_text}").lstrip()
+                    )
+                    lines_to_skip.append(line_idx)
+                    line = line.replace(
+                        foot_note_in_line,
+                        f"\\footnote[{footnote}]{{{footnote_definition}}}",
+                    )
+                    break
+        return line, lines_to_skip
 
     @staticmethod
     def generate_pdf(
@@ -1033,11 +1104,12 @@ linenos
         return saved_paths
 
     @staticmethod
-    def _include_graphic(file_path: str) -> str:
+    def _include_graphic(file_path: str, img_width: float) -> str:
         """Includes a graphic into latex document.
 
         Args:
             file_path (str): String corresponding to the path of the file.
+            img_width (float, optional): Image width in inches.
 
         Returns:
             str: Returned string with latex code.
@@ -1046,7 +1118,9 @@ linenos
         file_path = str(pathlib.Path(file_path).as_posix())
         file_path = f'"{file_path}"'
         line = (
-            "\\begin{figure}[H]\\centering\n\t\\includegraphics[width=1\\linewidth]{"
+            "\\begin{figure}[H]\\centering\n\t\\includegraphics"
+            + f"[width={img_width}"
+            + "\\linewidth]{"
             + file_path
             + "}\n"
         )
@@ -1128,6 +1202,13 @@ def main():
         action="store_true",
         help="Reset the default vault of the config file",
     )
+    # Get the default image width
+    parser.add_argument(
+        "--img-width",
+        default=1,
+        type=float,
+        help="Default width for images embedded in the pdf (in inches)",
+    )
     # For version of package
     parser.add_argument(
         "--version",
@@ -1148,6 +1229,9 @@ def main():
         if args.include_linked_notes
         else _return_bool_value(args.iln)
     )
+    img_width = args.img_width
+    if isinstance(img_width, str):
+        img_width = float(img_width)
 
     if args.version:
         print(
@@ -1159,7 +1243,7 @@ def main():
 
     # If there is a note path, then we are using the command line to generate a pdf
     if note_path:
-        tex = ObsiPdfGenerator(ch, toc)
+        tex = ObsiPdfGenerator(ch, toc, img_width)
         # If specified, change to vault directory
         change_to_vault_directory()
         tex.add_note(args.note, note_path, use_chapters, include_linked_notes)

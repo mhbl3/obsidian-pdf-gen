@@ -1,0 +1,167 @@
+\documentclass[10pt]{report}
+\usepackage{minted}
+\usepackage{enumitem}
+\setlistdepth{9}
+
+\setlist[itemize,1]{label=\textbullet}
+\setlist[itemize,2]{label=\textbullet}
+\setlist[itemize,3]{label=\textbullet}
+\setlist[itemize,4]{label=\textbullet}
+\setlist[itemize,5]{label=\textbullet}
+\setlist[itemize,6]{label=\textbullet}
+\setlist[itemize,7]{label=\textbullet}
+\setlist[itemize,8]{label=\textbullet}
+\setlist[itemize,9]{label=\textbullet}
+
+\renewlist{itemize}{itemize}{9}
+
+\usepackage{graphicx}
+
+\usepackage{csquotes}
+
+\usepackage[hidelinks]{hyperref}
+
+\usepackage[T1]{fontenc}
+
+\usepackage[most]{tcolorbox}
+\definecolor{block-gray}{gray}{0.95}
+\newtcolorbox{advtcolorbox}{
+    %colback=block-gray,
+    boxrule=0pt,
+    boxsep=0pt,
+    breakable,
+    enhanced jigsaw,
+    borderline west={4pt}{0pt}{gray},
+}
+
+\newtcbox{\pill}[1][blue]{on line,
+arc=7pt,colback=#1!10!white,colframe=#1!50!black,
+before upper={\rule[-3pt]{0pt}{10pt}},boxrule=1pt,
+boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}
+
+\usepackage{amsmath}
+\usepackage[dvipsnames]{xcolor} % to access the named colour LightGray
+\usepackage{soul}
+\usepackage{sectsty}
+\definecolor{LightGray}{rgb}{0.9, 0.9, 0.9}
+\definecolor{inlinecodecolor}{rgb}{0, 0.3, 0.6}
+\usepackage{lmodern}
+\makeatletter
+\renewcommand\subparagraph{%
+\@startsection{subparagraph}{5}{0pt}%
+{3.25ex \@plus 1ex \@minus .2ex}{-1em}%
+{\normalfont\normalsize\bfseries}}
+\makeatother
+\sethlcolor{yellow}
+\newrobustcmd*\inlinecode[2][]{\textcolor{inlinecodecolor}{\mintinline[#1]{python}{#2}}}
+\begin{document}
+
+
+\chapter{Damping Ratio}\label{ch:Damping Ratio}
+
+\pill{\#Damping-Ratio} 
+
+\section{Definition: }
+
+$$\xi = a/\omega_{n}$$
+
+\begin{itemize}
+\item $\xi$ is the damping ratio
+\item $a$ is the rate of exponential decay
+
+\begin{itemize}
+\item For second order systems: $e^{-at}$ 
+
+\end{itemize}
+\item $\omega_{n}$ is the natural frequency of oscillation 
+
+\item Measures the relative rate at which oscillation magnitudes are \textbf{reduced}, normalized by the natural frequency of the system
+
+\item $\zeta < 1$ ->  underdamped
+
+\begin{itemize}
+\item Oscillatory response decays exponentially 
+
+\item Lots of periods to eliminate the motion following a disturbance
+
+\end{itemize}
+\item $\zeta=0$ 
+
+\begin{itemize}
+\item Indefinitely oscillating response
+
+\end{itemize}
+\item $\lim_{\zeta \rightarrow 1} \zeta$
+
+\begin{itemize}
+\item Oscillations dissipate in relatively few periods of oscillatory motion
+
+\end{itemize}
+\item $\zeta=1$ 
+
+\begin{itemize}
+\item Critically damped system, with no motion
+
+\end{itemize}
+\end{itemize}
+
+
+\subsection{Percent Overshoot Method}
+
+
+$$\zeta = \frac{-\ln(\%OS/100)}{\sqrt{\pi^2 + \ln^2(\%OS/100)}}$$
+
+\begin{itemize}
+\item \hl{Response with too few peaks or too small to accurately extract from the time response}
+\item $\%OS$: Percent overshoot to a step input
+
+\begin{itemize}
+\item Applying it to a system with additional poles and/or zeros is a good-way of determining “effective” damping ratio
+
+\item \textbf{\hl{Large amount of overshoot but small residual oscillations}}
+
+\begin{itemize}
+\item Could be caused by presence of uncanceled zeros in the mid-frequency range (e.g. 1-10 rad/sec)
+
+\item Perceived as lightly damped mode by pilot, especially in turbulence 
+
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\begin{advtcolorbox}
+Doesn’t exist for impulse resulting in a steady state value of zero 
+
+\end{advtcolorbox}
+
+\subsection{Logarithmic Decrement}
+
+$$\zeta = \frac{\delta}{\sqrt{4\pi^2 + \delta^2}}$$
+
+\begin{itemize}
+\item Where $\delta$ (the natural logarithm of the ratio of successive peaks with period $T$ overreacted in measurement $y(t)$ :
+\begin{itemize}
+\item $\delta = \ln\left[\frac{y(t)}{y(t+T)}\right]$
+
+\end{itemize}
+\item Significant residual oscillations exists
+
+\item Used peak times and magnitude to determine natural frequency and decay frequency of the response, from which $\zeta$ is calculated
+
+\item Usually calculated from an impulse inputs and rate output (e.g., pitch rate)
+
+\begin{itemize}
+\item But step input should work
+
+\end{itemize}
+\item At least 3 oscillations required
+
+\end{itemize}
+
+\begin{advtcolorbox}
+From Wikipedia: The method of logarithmic decrement \textbf{becomes less and less precise as the damping ratio increases past about 0.5}; it does not apply at all for a damping ratio greater than 1.0 because the system is \href{https://en.m.wikipedia.org/wiki/Overdamped}{overdamped}
+
+\end{advtcolorbox}
+
+
+\end{document}
