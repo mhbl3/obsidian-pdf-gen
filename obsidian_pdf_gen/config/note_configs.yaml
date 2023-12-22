@@ -22,14 +22,22 @@ font:
   # NOTE: Only font sizes of 10pt, 11pt, and 12 pt are compatible with colored headers.
   size: 10 # intgeter, no need to add "pt"
 
+code:
+  frame rule: 0.4pt
+  # If true a label will be added to the code block (the language of the code)
+  label: True
+  font family: monospace
+
 # Available latex colors: https://www.overleaf.com/learn/latex/Using_colours_in_LaTeX
-Header Colors:
-  \#: red
-  \##: orange
-  \###: yellow
-  \####: Green
-  \#####: blue
-  \######: purple
+Header:
+  Colors:
+    \#: red
+    \##: orange
+    \###: yellow
+    \####: Green
+    \#####: blue
+    \######: purple
+  Level: 3
 
 inline code:
   default language: python

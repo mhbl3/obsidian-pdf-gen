@@ -1,4 +1,4 @@
-[![ObsidianPDFGenCI](https://github.com/mhbl3/obsidian_pdf_gen/actions/workflows/python-app.yml/badge.svg?branch=main)](https://github.com/mhbl3/obsidian_pdf_gen/actions/workflows/python-app.yml)
+[![ObsidianPDFGenCI](https://github.com/mhbl3/obsidian-pdf-gen/actions/workflows/python-app.yml/badge.svg)](https://github.com/mhbl3/obsidian-pdf-gen/actions/workflows/python-app.yml)
 # obsidian_pdf_gen
  Python PDF generator of Obsidian notes
 # Basic setup and pdf generation Pc/Mac/Linux
