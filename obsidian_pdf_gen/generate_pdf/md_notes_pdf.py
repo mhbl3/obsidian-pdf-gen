@@ -64,6 +64,11 @@ class ObsiPdfGenerator:
 
 \\setcounter{{secnumdepth}}{{header_level}}
 
+\\usepackage{{titlesec}}
+\\titleformat{{\\chapter}}[display]{{\\normalfont\\huge\\bfseries}}{{}}{{0pt}}{{\\Huge}}
+\\titleformat{{name=\\chapter,numberless}}[display]
+  {{\\normalfont\\huge\\bfseries}}{{}}{{0pt}}{{\\Huge}}
+
 \\setlist[itemize,1]{{label=\\textbullet}}
 \\setlist[itemize,2]{{label=\\textbullet}}
 \\setlist[itemize,3]{{label=\\textbullet}}
@@ -101,7 +106,7 @@ class ObsiPdfGenerator:
 \\usepackage{{amsmath}}
 \\usepackage[dvipsnames]{{xcolor}} % to access the named colour LightGray
 \\usepackage{{soul}}
-\\usepackage{{sectsty}}
+% \\usepackage{{sectsty}}
 \\definecolor{{LightGray}}{{rgb}}{{0.9, 0.9, 0.9}}
 \\definecolor{{inlinecodecolor}}{{rgb}}{{0, 0.3, 0.6}}
 \\usepackage{{lmodern}}
