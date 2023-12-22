@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="obsidian_pdf_gen",
-    version="1.7.3",
+    version="1.8.0",
     author="Marc-Henri Bleu-Laine",
     url="https://github.com/mhbl3/obsidian-pdf-gen",
     description="A python package to convert Obsidian Markdown files into stylish PDFs",

@@ -3,8 +3,10 @@
 \usepackage{enumitem}
 \setlistdepth{9}
 
+% Sets the level up to which the numbering will occur on the headers 
 \setcounter{secnumdepth}{3}
 
+% Remove "chapter" from the chapter title
 \usepackage{titlesec}
 \titleformat{\chapter}[display]{\normalfont\huge\bfseries}{}{0pt}{\Huge}
 \titleformat{name=\chapter,numberless}[display]
@@ -74,7 +76,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}
 \newrobustcmd*\inlinecode[2][]{\textcolor{inlinecodecolor}{\mintinline[#1]{python}{#2}}}
 \sectionfont{\color{red}}
 \subsectionfont{\color{orange}}
-\subsubsectionfont{\color{yellow}}
+\renewcommand{\subsubsection}{\textcolor{yellow}{#1}}\mbox{}\\}
 \newcommand{\myparagraph}[1]{\paragraph{\textcolor{Green}{#1}}\mbox{}\\}
 \newcommand{\mysubparagraph}[1]{\subparagraph{\textcolor{blue}{#1}}\mbox{}\\}
 \begin{document}

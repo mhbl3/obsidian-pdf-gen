@@ -69,8 +69,10 @@ class ObsiPdfGenerator:
 \\usepackage{{enumitem}}
 \\setlistdepth{{9}}
 
+% Sets the level up to which the numbering will occur on the headers 
 \\setcounter{{secnumdepth}}{{header_level}}
 
+% Remove "chapter" from the chapter title
 \\usepackage{{titlesec}}
 \\titleformat{{\\chapter}}[display]{{\\normalfont\\huge\\bfseries}}{{}}{{0pt}}{{\\Huge}}
 \\titleformat{{name=\\chapter,numberless}}[display]
@@ -137,6 +139,7 @@ boxsep=0pt,left=6pt,right=6pt,top=2pt,bottom=2pt}}
 {{\\normalfont\\normalsize\\bfseries}}}}
 \\makeatother
 """
+
         # Add the level for headers to be numbered
         self.document = self.document.replace("header_level", str(CONFIG["Header"]["Level"]))
         self.document += "\\sethlcolor{{" + hl_color + "}}" + "\n"
